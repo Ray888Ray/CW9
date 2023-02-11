@@ -27,4 +27,4 @@ class UserChangeForm(forms.ModelForm):
 class ProfileChangeForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['avatar', 'about_user']
+        fields = ['avatar', 'about_user', 'phone']

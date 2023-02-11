@@ -1,5 +1,5 @@
 from django.contrib.auth import login
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import redirect
 from accounts.forms import MyUserCreationForm, UserChangeForm, ProfileChangeForm
@@ -34,8 +34,16 @@ class UserDetailView(DetailView):
     template_name = 'detail.html'
     context_object_name = 'user_obj'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        announcements = self.object.author.all().exclude(status='deleted')
+        # if self.request.user != self.object.author:
+        #     announcements.fillter(status='published')
+        context['announcements'] = announcements
+        return context
 
-class UserChangeView(LoginRequiredMixin, UpdateView):
+
+class UserChangeView(PermissionRequiredMixin, UpdateView):
     model = get_user_model()
     form_class = UserChangeForm
     template_name = 'change.html'
@@ -72,6 +80,9 @@ class UserChangeView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('accounts:profile', kwargs={'pk': self.get_object().pk})
+
+    def has_permission(self):
+        return self.get_object() == self.request.user
 
 
 class UserPasswordChangeView(PasswordChangeView):

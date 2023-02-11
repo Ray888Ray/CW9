@@ -33,9 +33,11 @@
         <p  class="card-text"><b>Имя:</b> {{ user_obj.first_name }}</p>
         <p class="card-text"><b>Фамилия:</b> {{ user_obj.last_name }}</p>
         <p class="card-text"><b>Почта:</b> {{ user_obj.email }}</p>
+        <p class="card-text"><b>Номер:</b> {{ user_obj.phone }}</p>
         <p class="card-text"><b>О себе:</b> {{ user_obj.profile.about_user }}</p>
       </div>
     </div>
   </div>
 </div>
+{% include 'partial/announcements_list.html' %}
 {% endblock %}
