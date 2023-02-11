@@ -37,8 +37,8 @@ class UserDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         announcements = self.object.author.all().exclude(status='deleted')
-        # if self.request.user != self.object.author:
-        #     announcements.fillter(status='published')
+        if self.request.user != self.object:
+            announcements = announcements.filter(status='published')
         context['announcements'] = announcements
         return context
 
@@ -80,7 +80,7 @@ class UserChangeView(PermissionRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('accounts:profile', kwargs={'pk': self.get_object().pk})
-
+    
     def has_permission(self):
         return self.get_object() == self.request.user
 

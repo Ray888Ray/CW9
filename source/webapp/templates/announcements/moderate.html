@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+ <h1 class="text-center" >Announcements</h1><br/><hr>
+    {% for announcement in announcements %}
+        <h2>Title: {{ announcement.title }}</h2>
+        <h2>Category: {{ announcement.category }}</h2>
+        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+          <button type="button" class="btn btn-success" onclick="AcceptButtonClick(event)" id="accept{{ announcement.pk }}" data-index-link="{% url 'webapp:status' announcement.pk %}"> Accept </button>
+          <button type="button" class="btn btn-danger" onclick="CancelButtonClick(event)" id="cancel{{ announcement.pk }}"  data-index-link="{% url 'webapp:status' announcement.pk %}"> Cancel </button>
+        </div>
+        <hr>
+    {% endfor %}
+{% endblock %}
+

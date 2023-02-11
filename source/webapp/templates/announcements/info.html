@@ -1,10 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+{% block menu %}
+
+    {% if request.user.is_authenticated %}
+
+        {% if request.user == announcement.author %}
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'webapp:update' announcement.pk %}">Update</a>
+            </li>
+        {% endif %}
+        {% if request.user == announcement.author %}
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'webapp:delete' announcement.pk %}">Delete</a>
+            </li>
+        {% endif %}
+
+    {% endif %}
+
+
+
+{% endblock %}
+
+{% block content %}
+
+{% csrf_token %}
+    <h1>Information:</h1><br>
+    {% if announcement.img %}
+       <img src="{{ announcement.img.url }}" class="img-fluid rounded-start" alt="...">
+    {% else %}
+        <img src="{% static 'img/no-image-icon.png'%}">
+    {% endif %}
+    <p><b>Title:</b> {{ announcement.title }}</p>
+    <p><b>Description: </b> {{ announcement.description }}</p>
+    <p><b>Price: </b>{{ announcement.price}}</p>
+    <p><b>Category: </b>{{ announcement.category}}</p>
+    <p><b>Author: </b><a href="{%url "accounts:profile" announcement.author.pk %}">{{ announcement.author }}</a></p>
+
+
+    <h2>Comments:</h2>
+    <br><br>
+    <hr>
+    {% if request.user != announcement.author and request.user.is_authenticated %}
+        <form action="{%url 'webapp:comments_create' announcement.pk %}" method="post">
+            {% include 'partial/form.html'  with button_text='Comment' %}
+        </form>
+    <hr>
+
+    {% endif %}
+
+    <br><br><br>
+     <p>{% for comment in announcements %}
+            <h2><a href="{%url "accounts:profile" comment.comments_author.pk %}">Author: {{ comment.comments_author }} | {{ comment.comments_author.email }}</a></h2><br>
+            <h2>Comment: {{ comment.comments }}</h2><br>
+                {% if request.user.is_authenticated %}
+
+                    {% if comment.comments_author == request.user %}
+                        <a href="{% url 'webapp:comments_delete' comment.pk %}" class="px-2 fs-1"><i class="bi bi-trash-fill"></i></a>
+                    {% endif %}
+                {% endif %}
+                {% if not forloop.last %}<br><br> {% endif %}
+    <p>{% endfor %}</p>
+
+{% endblock %}

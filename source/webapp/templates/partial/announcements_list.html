@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+
+ <h1 class="text-center" >Announcements</h1><br/><hr>
+    {% for announcement in announcements %}
+        <h2>Title: {{ announcement.title }}</h2>
+        <h2>Category: {{ announcement.category }}</h2>
+        <hr>
+    {% endfor %}

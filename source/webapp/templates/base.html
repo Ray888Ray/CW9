@@ -26,6 +26,12 @@
 
           {% block menu %}{% endblock %}
 
+      {% if perms.webapp.can_moderated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'webapp:moderate' %}">Moderate</a>
+            </li>
+        {% endif %}
+
       {% if request.user.is_authenticated %}
            {% block menu_links %}{% endblock %}
 

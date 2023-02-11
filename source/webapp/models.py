@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 
-Status = [('moderate', 'модерация'), ('published', 'Опубликовано'), ('canceled', 'Отклонено'),  ('delete', 'Удаление')]
+Status = [('moderate', 'модерация'), ('published', 'Опубликовано'), ('canceled', 'Отклонено'),  ('deleted', 'Удаление')]
 
 
 class Categories(models.Model):
@@ -24,7 +24,6 @@ class Comment(models.Model):
 
 
 class Announcement(models.Model):
-    # is_deleted = models.BooleanField(default=False)
     img = models.ImageField(null=True, blank=True, upload_to='pictures', verbose_name='Image')
     title = models.CharField(max_length=30, blank=False, null=False, verbose_name='Title')
     description = models.CharField(max_length=2000, null=True, blank=True, verbose_name='Description')
@@ -32,28 +31,21 @@ class Announcement(models.Model):
     price = models.IntegerField(verbose_name='Price')
     category = models.ForeignKey('webapp.Categories', related_name='category', on_delete=models.PROTECT,
                                  verbose_name='Categories')
-    status = models.CharField(max_length=15, choices=Status, default=Status[0][0],)
+    status = models.CharField(max_length=15, choices=Status, default=Status[0][0])
     created_at = models.DateField(auto_now_add=True, verbose_name='Created')
     updated_at = models.DateField(auto_now=True, verbose_name='Updated')
     published = models.DateField(auto_now=True, verbose_name='Published')
+
+    class Meta:
+        permissions = [
+            ('can_moderated', 'Может модерировать отзыв')
+
+        ]
 
     def __str__(self):
         return f'{self.title}'
 
 
-# class SoftDeleteModel(models.Model):
-#     is_deleted = models.BooleanField(default=False)
-#
-#     def soft_delete(self):
-#         self.is_deleted = True
-#         self.save()
-#
-#     def restore(self):
-#         self.is_deleted = False
-#         self.save()
-#
-#     class Meta:
-#         abstract = True
 
 
 
